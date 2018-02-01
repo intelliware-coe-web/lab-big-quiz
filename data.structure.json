@@ -1,0 +1,28 @@
+{
+  "rooms": [
+    {
+      "quiz-state": {
+        "question": "what is this?",
+        "answers": [
+          {
+            "answer": "apple",
+            "is-correct": false,
+            "points": 0
+          },
+          {
+            "answer": "banana",
+            "is-correct": true,
+            "points": 1
+          }
+        ]
+      },
+      "name": "Lab #1",
+      "users": [
+        {
+          "name": "Bob",
+          "score": 10
+        }
+      ]
+    }
+  ],
+}
