@@ -8,7 +8,7 @@ const SignUpPage = ({ history }) =>
     <h1>SignUp</h1>
     <SignUpForm history={history} />
   </div>
-
+                
 const INITIAL_STATE = {
   username: '',
   email: '',
