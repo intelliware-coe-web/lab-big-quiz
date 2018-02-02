@@ -9,7 +9,7 @@ import LandingPage from './Landing';
 import SignInPage from './SignIn';
 import SignUpPage from './SignUp';
 import HomePage from './Home';
-import withAuthentication from './withAuthentication';
+import withAuthentication from './auth/withAuthentication';
 
 import * as routes from '../constants/routes';
 

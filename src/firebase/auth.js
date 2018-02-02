@@ -6,9 +6,9 @@ export const doCreateUserWithEmailAndPassword = (email, password) =>
 
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-export function doSignInWithGoogle() {
-    return firebase.auth().signInWithRedirect(googleProvider);
-}
+export const doSignInWithGoogle = () =>
+  firebase.auth().signInWithRedirect(googleProvider);
+
 
   // Sign In
 export const doSignInWithEmailAndPassword = (email, password) =>

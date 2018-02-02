@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import { auth } from '../firebase';
-import * as routes from '../constants/routes';
+import { auth } from '../../firebase';
+import * as routes from './../../constants/routes';
 
 const byPropKey = (propertyName, value) => () => ({
   [propertyName]: value,
