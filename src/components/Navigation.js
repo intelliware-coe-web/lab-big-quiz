@@ -19,15 +19,21 @@ Navigation.contextTypes = {
 
 const NavigationAuth = () =>
   <ul>
-    <li><Link to={routes.LANDING}>Landing</Link></li>
-    <li><Link to={routes.HOME}>Home</Link></li>
+    <li><Link to={routes.ROOM_LIST}>Room List</Link></li>
+    <li><Link to={routes.ROOM_CONTROLS}>Room Controls</Link></li>
+    <li><Link to={routes.ROOM_LEADERBOARD}>Room Leadboard</Link></li>
+    <li><Link to={routes.ROOM_PRESENT}>Room Presentation</Link></li>
+    <li><Link to={routes.ROOM_SCORE_BREAKDOWN}>Room Score Breakdown</Link></li>
+
+    <li><Link to={routes.JOIN_ROOM}>Join Room</Link></li>
+    <li><Link to={routes.QUIZ}>Quiz</Link></li>
+
     <li><SignOutButton /></li>
   </ul>
 
 const NavigationNonAuth = () =>
   <ul>
-    <li><Link to={routes.LANDING}>Landing</Link></li>
-    <li><Link to={routes.SIGN_IN}>Sign In</Link></li>
+    <li><Link to={routes.SIGN_IN}>SIGN_IN</Link></li>
   </ul>
 
 export default Navigation;

@@ -1,5 +1,11 @@
-export const SIGN_IN = '/signin';
+export const SIGN_IN = '/';
 export const SIGN_UP = '/signup';
 export const SIGN_OUT = '/signout';
-export const LANDING = '/';
 export const HOME = '/home';
+export const ROOM_LIST = '/rooms';
+export const ROOM_CONTROLS = '/controls';
+export const ROOM_PRESENT = '/present';
+export const ROOM_LEADERBOARD = '/leaderboard';
+export const ROOM_SCORE_BREAKDOWN = '/score-breakdown';
+export const JOIN_ROOM = '/join';
+export const QUIZ = '/quiz';

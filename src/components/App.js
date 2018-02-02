@@ -4,12 +4,20 @@ import {
   Route
 } from 'react-router-dom'
 
-import Navigation from './Navigation';
-import LandingPage from './Landing';
-import SignInPage from './SignIn';
-import SignUpPage from './SignUp';
-import HomePage from './Home';
 import withAuthentication from './auth/withAuthentication';
+import Navigation from './Navigation';
+
+import RoomListPage from './pages/RoomList';
+import RoomControlsPage from './pages/RoomControls';
+import RoomLeaderboardPage from './pages/RoomLeaderboard'
+import RoomScoreBreakdownPage from './pages/RoomLeaderboard';
+import RoomPresentPage from './pages/RoomPresent';
+
+import JoinRoomPage from './pages/JoinRoom';
+import QuizPage from './pages/Quiz';
+
+import SignInPage from './pages/SignIn';
+import SignUpPage from './pages/SignUp';
 
 import * as routes from '../constants/routes';
 
@@ -20,10 +28,17 @@ const App = () =>
 
       <hr/>
 
-      <Route exact path={routes.LANDING} component={() => <LandingPage />} />
+      <Route exact path={routes.ROOM_LIST} component={() => <RoomListPage />} />
+      <Route exact path={routes.ROOM_CONTROLS} component={() => <RoomControlsPage />} />
+      <Route exact path={routes.ROOM_LEADERBOARD} component={() => <RoomLeaderboardPage />} />
+      <Route exact path={routes.ROOM_PRESENT} component={() => <RoomScoreBreakdownPage />} />
+      <Route exact path={routes.ROOM_SCORE_BREAKDOWN} component={() => <RoomPresentPage />} />
+
+      <Route exact path={routes.JOIN_ROOM} component={() => <JoinRoomPage />} />
+      <Route exact path={routes.QUIZ} component={() => <QuizPage />} />
+
       <Route exact path={routes.SIGN_UP} component={() => <SignUpPage />} />
       <Route exact path={routes.SIGN_IN} component={() => <SignInPage />} />
-      <Route exact path={routes.HOME} component={() => <HomePage />} />
     </div>
   </Router>
 

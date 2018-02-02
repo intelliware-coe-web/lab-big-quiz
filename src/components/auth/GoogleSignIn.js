@@ -16,7 +16,7 @@ class GoogleSignIn extends Component {
 
     auth.doSignInWithGoogle()
       .then(() => {
-        history.push(routes.HOME);
+        history.push(routes.ROOM_LIST);
       })
       .catch(error => {
         this.setState(byPropKey('error', error));

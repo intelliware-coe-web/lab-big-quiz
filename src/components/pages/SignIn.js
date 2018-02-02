@@ -2,8 +2,8 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { SignUpLink } from './SignUp';
-import EmailSignIn from './auth/EmailSignIn';
-import GoogleSignIn from './auth/GoogleSignIn';
+import EmailSignIn from '../auth/EmailSignIn';
+import GoogleSignIn from '../auth/GoogleSignIn';
 
 const SignInPage = ({ history }) =>
   <div>
