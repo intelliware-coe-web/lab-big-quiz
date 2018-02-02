@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import firebase from 'firebase'
+import ReactFireMixin from 'reactfire'
+import reactMixin from 'react-mixin'
 
 const RoomListPage = () =>
   <div>
@@ -9,8 +12,20 @@ const RoomListPage = () =>
 
 class RoomList extends Component {
 
-  get showRooms() {
-    return <li>Test <button onClick={this.handleJoin}>Join</button></li>
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      rooms: []
+    }
+  }
+
+  componentDidMount () {
+    var ref = firebase.database().ref("rooms");
+    this.bindAsArray(ref, 'rooms');
+  }
+
+  showRooms(room) {
+    return <li>{room.name} <button onClick={this.handleJoin}>Join</button></li>
   }
 
   handleJoin() {
@@ -19,9 +34,15 @@ class RoomList extends Component {
 
   render() {
     return (
-      <ul>{this.showRooms}</ul>
+      <ul>
+      {this.state.rooms.map((room, idx) => {
+        return this.showRooms(room)
+      })}
+      </ul>
     );
   }
 }
+
+reactMixin(RoomList.prototype, ReactFireMixin)
 
 export default RoomListPage;
