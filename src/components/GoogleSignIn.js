@@ -8,9 +8,6 @@ const byPropKey = (propertyName, value) => () => ({
 });
 
 class GoogleSignIn extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   googleSignIn(event) {  
     const {
