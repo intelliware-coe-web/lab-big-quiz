@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom'
-import PropTypes from 'prop-types';
-import firebase from 'firebase'
-import ReactFireMixin from 'reactfire'
-import reactMixin from 'react-mixin'
+import { firebase } from '../../firebase';
 
 const RoomListPage = () =>
   <div>
@@ -16,22 +13,41 @@ class RoomList extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      rooms: []
+      rooms: [],
+      fetched: false
     }
   }
 
   componentDidMount () {
-    var ref = firebase.database().ref("rooms");
-    this.bindAsArray(ref, 'rooms');
+    var page = this;
+    firebase.firestore
+            .collection("rooms")
+            .get()
+            .then(function(querySnapshot) {
+              var rooms = []
+              querySnapshot.forEach(function(doc) {
+                rooms.push({id: doc.id, name: doc.data().name});
+              });
+              page.setState({
+                'rooms': rooms,
+                'fetched': true
+              });
+            })
   }
 
-  showRooms(room) {
-    return <li>{room.name} 
-      {room}
-      <Link to="/rooms/qwerty123456/controls">Controls</Link>
-      <Link to="/rooms/qwerty123456/present">Present</Link>
-      <button onClick={this.handleJoin}>Join</button>
-    </li>
+  get renderRoomItems() {
+    const rooms = this.state.rooms;
+    return rooms.map((room, index) => {
+      return <li key={room.id}>{room.name}<Link to={'/rooms/' + room.id + '/controls'}>Controls</Link><Link to={'/rooms/' + room.id + '/present'}>Present</Link></li>
+    });
+  }
+
+  get showRooms() {
+    if (!this.state.fetched || this.state.rooms.length === 0) {
+      return null;
+    }
+
+    return <ul>{this.renderRoomItems}</ul>;
   }
 
   handleJoin() {
@@ -40,15 +56,11 @@ class RoomList extends Component {
 
   render() {
     return (
-      <ul>
-      {this.state.rooms.map((room, idx) => {
-        return this.showRooms(room)
-      })}
-      </ul>
+      <div>
+        {this.showRooms}
+      </div>
     );
   }
 }
-
-reactMixin(RoomList.prototype, ReactFireMixin)
 
 export default RoomListPage;

@@ -1,4 +1,6 @@
-import * as firebase from 'firebase';
+const firebase = require("firebase");
+// Required for side-effects
+require("firebase/firestore");
 
 const prodConfig = {
   apiKey: 'YOUR_API_KEY',
@@ -28,7 +30,9 @@ if (!firebase.apps.length) {
 }
 
 const auth = firebase.auth();
+const firestore = firebase.firestore();
 
 export {
   auth,
+  firestore
 };
