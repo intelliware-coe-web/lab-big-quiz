@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom'
 
 const RoomListPage = () =>
   <div>
@@ -10,16 +10,18 @@ const RoomListPage = () =>
 class RoomList extends Component {
 
   get showRooms() {
-    return <li>Test <button onClick={this.handleJoin}>Join</button></li>
-  }
-
-  handleJoin() {
-    alert('Join Room');
+    return <li>
+      Test 
+      <Link to="/rooms/qwerty123456/controls">Controls</Link>
+      <Link to="/rooms/qwerty123456/present">Present</Link>
+    </li>
   }
 
   render() {
     return (
-      <ul>{this.showRooms}</ul>
+      <div>
+        <ul>{this.showRooms}</ul>
+      </div>
     );
   }
 }

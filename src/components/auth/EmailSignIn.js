@@ -33,7 +33,7 @@ class EmailSignIn extends Component {
     auth.doSignInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState(() => ({ ...INITIAL_STATE }));
-        history.push(routes.ROOM_LIST);
+        history.push(routes.JOIN_ROOM);
       })
       .catch(error => {
         this.setState(byPropKey('error', error));

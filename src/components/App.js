@@ -28,14 +28,14 @@ const App = () =>
 
       <hr/>
 
-      <Route exact path={routes.ROOM_LIST} component={() => <RoomListPage />} />
-      <Route exact path={routes.ROOM_CONTROLS} component={() => <RoomControlsPage />} />
-      <Route exact path={routes.ROOM_LEADERBOARD} component={() => <RoomLeaderboardPage />} />
-      <Route exact path={routes.ROOM_PRESENT} component={() => <RoomScoreBreakdownPage />} />
-      <Route exact path={routes.ROOM_SCORE_BREAKDOWN} component={() => <RoomPresentPage />} />
+      <Route exact path={routes.ROOM_LIST} component={ RoomListPage }/>
+      <Route exact path={routes.ROOM_CONTROLS} component={ RoomControlsPage } />
+      <Route exact path={routes.ROOM_LEADERBOARD} component={ RoomLeaderboardPage } />
+      <Route exact path={routes.ROOM_PRESENT} component={ RoomScoreBreakdownPage } />
+      <Route exact path={routes.ROOM_SCORE_BREAKDOWN} component={ RoomPresentPage } />
 
-      <Route exact path={routes.JOIN_ROOM} component={() => <JoinRoomPage />} />
-      <Route exact path={routes.QUIZ} component={() => <QuizPage />} />
+      <Route exact path={routes.JOIN_ROOM} component={ JoinRoomPage } />
+      <Route exact path={routes.QUIZ} component={ QuizPage } />
 
       <Route exact path={routes.SIGN_UP} component={() => <SignUpPage />} />
       <Route exact path={routes.SIGN_IN} component={() => <SignInPage />} />

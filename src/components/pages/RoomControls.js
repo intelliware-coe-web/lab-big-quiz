@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-const RoomControlsPage = () =>
+const RoomControlsPage = ({match}) =>
   <div>
-    <h1>Room Controls</h1>
+    <h1>Room Controls {match.params.roomId}</h1>
 
     <div>
       <PreviousButton/>
