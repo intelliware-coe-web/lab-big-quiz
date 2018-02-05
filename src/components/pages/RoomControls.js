@@ -103,31 +103,37 @@ class QuizSetupForm extends WithQuizState {
   constructor(props) {
     super(props);
     this.state = {
-      value: 'Questions go here.'
+      questions: []
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value});
+  updateQuestion(event) {
+    event.preventDefault();    
+  }
+  
+  renderQuestion(question) {
+    return (
+      <form onSubmit={this.updateQuestion}>
+        <label>Question:</label>
+        <input type="text" value={question.question}/>
+        {this.renderAnswers(question)}
+        <input type="submit" value="Submit" />
+      </form>
+    );
   }
 
-  handleSubmit(event) {
-    alert('An data was submitted: ' + this.state.value);
-    event.preventDefault();
+  get renderQuestionForm() {
+    const questions = this.state.questions;
+    return questions.map((question, index) => {
+      return <div>{this.renderQuestion(question)}</div>
+    });
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Questions:
-          <textarea value={this.state.value} onChange={this.handleChange} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+      <div>
+        {this.renderQuestionForm}
+      </div>      
     );
   }
 }
