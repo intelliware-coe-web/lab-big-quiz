@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { firebase } from '../../firebase';
 
 const RoomControlsPage = ({match}) =>
@@ -15,16 +16,15 @@ const RoomControlsPage = ({match}) =>
     </div>
   </div>
 
-
-class PreviousButton extends Component {
+class WithQuizState extends Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
+
     this.state = {
+      currentQuestion: 0,
       numQuestions: 0
     }
   }
-
   componentWillReceiveProps(newProps) {
     var vm = this;
 
@@ -35,7 +35,6 @@ class PreviousButton extends Component {
       var docRef = firebase.firestore.collection('rooms').doc(roomId);
 
       docRef.onSnapshot(function(roomSnapshot) {
-              console.log(roomSnapshot.data());
               vm.setState({currentQuestion: roomSnapshot.data()['current-question']});
             });
 
@@ -45,12 +44,19 @@ class PreviousButton extends Component {
             });
     }
   }
+}
+
+
+class PreviousButton extends WithQuizState {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
 
   handleClick(event) {
     var vm = this;
 
     if (vm.state.roomId && vm.state.currentQuestion) {
-      console.log('vm.state.currentQuestion', vm.state.currentQuestion);
       firebase.firestore
               .collection('rooms')
               .doc(vm.state.roomId)
@@ -67,9 +73,23 @@ class PreviousButton extends Component {
   }
 }
 
-class NextButton extends Component {
+class NextButton extends WithQuizState {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
   handleClick(event) {
-    alert('Next was clicked');
+    var vm = this;
+
+    if (vm.state.roomId && (vm.state.currentQuestion || vm.state.currentQuestion === 0) && vm.state.currentQuestion !== vm.state.numQuestions) {
+      firebase.firestore
+              .collection('rooms')
+              .doc(vm.state.roomId)
+              .update({
+                 'current-question': vm.state.currentQuestion+1
+              });
+    }
   }
 
   render() {
@@ -79,7 +99,7 @@ class NextButton extends Component {
   }
 }
 
-class QuizSetupForm extends Component {
+class QuizSetupForm extends WithQuizState {
   constructor(props) {
     super(props);
     this.state = {
