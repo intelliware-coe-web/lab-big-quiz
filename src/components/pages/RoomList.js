@@ -5,7 +5,7 @@ import { firebase } from '../../firebase';
 const RoomListPage = () =>
   <div>
     <h1>Room List</h1>
-    <RoomList/>
+    <RoomList presenter/>
   </div>
 
 class RoomList extends Component {
@@ -35,10 +35,22 @@ class RoomList extends Component {
             })
   }
 
-  get renderRoomItems() {
+  get renderRoomItemsAsPresenter() {
     const rooms = this.state.rooms;
     return rooms.map((room, index) => {
-      return <li key={room.id}>{room.name}<Link to={'/rooms/' + room.id + '/controls'}>Controls</Link><Link to={'/rooms/' + room.id + '/present'}>Present</Link></li>
+      return <li key={room.id}>{room.name}
+        <Link to={'/rooms/' + room.id + '/controls'}>Controls</Link>
+        <Link to={'/rooms/' + room.id + '/present'}>Present</Link>
+      </li>
+    });
+  }
+
+  get renderRoomItemsAsUser() {
+    const rooms = this.state.rooms;
+    return rooms.map((room, index) => {
+      return <li key={room.id}>{room.name}
+        <Link to={'/quiz/' + room.id}>Join</Link>
+      </li>
     });
   }
 
@@ -47,7 +59,11 @@ class RoomList extends Component {
       return null;
     }
 
-    return <ul>{this.renderRoomItems}</ul>;
+    if (this.props.presenter) {
+      return <ul>{this.renderRoomItemsAsPresenter}</ul>;
+    } else {
+      return <ul>{this.renderRoomItemsAsUser}</ul>;
+    }    
   }
 
   handleJoin() {
@@ -63,4 +79,5 @@ class RoomList extends Component {
   }
 }
 
+export { RoomList};
 export default RoomListPage;
