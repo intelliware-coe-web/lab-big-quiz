@@ -24,7 +24,9 @@ class PresentQuestion extends WithQuizState {
     this.state = {
       roomId: null,
       currentQuestion: 0,
-      question: {}
+      question: '',
+      code: '',
+      answers: []
     }
   }
 
@@ -43,20 +45,49 @@ class PresentQuestion extends WithQuizState {
               docRef.collection('questions')
                     .where('number', '==', questionNumber)
                     .onSnapshot(function(questionSnapshot) {
-                      var question = questionSnapshot.docs[0].data();
-                      vm.setState({question: question})
+                      console.log(questionSnapshot)
+                      vm.setState({question: questionSnapshot.docs[0].data().question})
+                      vm.setState({code: questionSnapshot.docs[0].data().code})
+
+                      docRef.collection('questions').doc(questionSnapshot.docs[0].id)
+                                      .collection('answers')
+                                      .get()
+                                      .then(function(answersSnapshot) {
+                                        var answers = []
+                                        answersSnapshot.forEach(function(answer) {
+                                          answers.push({id: answer.data().id, answer: answer.data().answer});
+                                        });
+                                        vm.setState({
+                                          'answers': answers,
+                                          'fetched': true
+                                        });
+                                      })
                   });
             });
     }
   }
 
   get renderQuestion() {
-    return <div><h1>{this.state.question.question}</h1></div>
+    return <h1>{this.state.question}</h1>
+  }
+
+  get renderAnswers() {
+    const answers = this.state.answers;
+    return answers.map((answer, index) => {
+      return <li key={answer.id}>{answer.answer}</li>
+    });
   }
 
   render() {
     return (
-      <div>{this.renderQuestion}</div>
+      <div>
+        <div>
+        {this.renderQuestion}
+        </div>
+        <ul>
+          {this.renderAnswers}
+        </ul>
+      </div>
     );
   }
 }
