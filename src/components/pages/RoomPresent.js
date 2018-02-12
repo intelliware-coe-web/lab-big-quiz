@@ -6,23 +6,12 @@ const RoomPresentPage = ({match}) =>
     <PresentQuestion room-id={match.params.roomId}/>
   </div>
 
-class WithQuizState extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentQuestion: 0,
-      numQuestions: 0
-    }
-  }
-  
-}
-
-class PresentQuestion extends WithQuizState {
+class PresentQuestion extends Component {
   constructor(props) {
     super(props);
     this.state = {
       roomId: null,
+      numQuestions: 0,
       currentQuestion: 0,
       question: '',
       code: '',
@@ -42,7 +31,8 @@ class PresentQuestion extends WithQuizState {
       docRef.onSnapshot(function(roomSnapshot) {
               var questionNumber = roomSnapshot.data().currentQuestion;
               vm.setState({currentQuestion: questionNumber});
-              vm.setState({showAnswer: roomSnapshot.data().showAnswer});              
+              vm.setState({showAnswer: roomSnapshot.data().showAnswer});
+
               docRef.collection('questions')
                     .where('number', '==', questionNumber)
                     .onSnapshot(function(questionSnapshot) {

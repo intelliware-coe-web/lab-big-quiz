@@ -179,10 +179,18 @@ class QuizSetupForm extends WithQuizState {
   updateQuestion(event) {
     event.preventDefault();    
   }
+
+  handleSubmit(text) {
+    return function(event) {
+      event.preventDefault()
+      console.log(text)
+    }.bind(this)
+  }
+  
   
   renderQuestion(question) {
     return (
-      <form onSubmit={this.updateQuestion}>
+      <form onSubmit={this.handleSubmit(question)}>
         <label>Question:</label>
         <textarea type="text" value={question.question}/>        
         <input type="submit" value="Submit" />
