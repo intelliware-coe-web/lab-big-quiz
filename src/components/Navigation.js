@@ -18,7 +18,7 @@ Navigation.contextTypes = {
 };
 
 const NavigationAuth = () =>
-  <ul>
+  <ul className="navigation">
     <li><Link to={routes.ROOM_LIST}>Room List</Link></li>
     <li><Link to={routes.ROOM_CONTROLS}>Room Controls</Link></li>
     <li><Link to={routes.ROOM_LEADERBOARD}>Room Leadboard</Link></li>

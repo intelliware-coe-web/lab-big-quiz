@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 
+import './RoomControls.css';
 import { firebase } from '../../firebase';
 
 const RoomControlsPage = ({match}) =>
   <div>
     <h1>Room Controls</h1>
 
-    <div>
-      <PreviousButton room-id={match.params.roomId}/>
-      <NextButton room-id={match.params.roomId}/>
-      <ShowAnswerButton room-id={match.params.roomId}/>
-    </div>
+    <div className="container">
+      <div>
+        <PreviousButton room-id={match.params.roomId}/>
+        <NextButton room-id={match.params.roomId}/>
+        <ShowAnswerButton room-id={match.params.roomId}/>
+      </div>
 
-    <div>
-      <QuizSetupForm room-id={match.params.roomId}/>
+      <div>
+        <QuizSetupForm room-id={match.params.roomId}/>
+      </div>
     </div>
   </div>
 
@@ -36,8 +39,10 @@ class WithQuizState extends Component {
       var docRef = firebase.firestore.collection('rooms').doc(roomId);
 
       docRef.onSnapshot(function(roomSnapshot) {        
-              vm.setState({currentQuestion: roomSnapshot.data().currentQuestion});
-              vm.setState({showAnswer: roomSnapshot.data().showAnswer})
+              vm.setState({
+                currentQuestion: roomSnapshot.data().currentQuestion,
+                showAnswer: roomSnapshot.data().showAnswer
+              });
             });
 
       docRef.collection('questions')
@@ -148,6 +153,29 @@ class QuizSetupForm extends WithQuizState {
     };
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    var vm = this;
+
+    if (this.state.roomId && this.state.roomId !== prevState.roomId) {
+      firebase.firestore
+              .collection('rooms')
+              .doc(this.state.roomId)
+              .collection('questions')
+              .onSnapshot(function(querySnapshot) {
+                var questions = [];
+                querySnapshot.forEach(function(doc) {
+                  questions.push({
+                    id: doc.id,
+                    number: doc.data().number,
+                    question: doc.data().question
+                  })
+                });
+                vm.setState({questions: questions});
+              });
+    }
+  }
+
+
   updateQuestion(event) {
     event.preventDefault();    
   }
@@ -156,8 +184,7 @@ class QuizSetupForm extends WithQuizState {
     return (
       <form onSubmit={this.updateQuestion}>
         <label>Question:</label>
-        <input type="text" value={question.question}/>
-        {this.renderAnswers(question)}
+        <textarea type="text" value={question.question}/>        
         <input type="submit" value="Submit" />
       </form>
     );

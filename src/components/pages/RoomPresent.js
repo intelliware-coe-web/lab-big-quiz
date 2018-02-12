@@ -47,7 +47,6 @@ class PresentQuestion extends WithQuizState {
                     .where('number', '==', questionNumber)
                     .onSnapshot(function(questionSnapshot) {
                       var questionData = questionSnapshot.docs[0].data();
-                      console.log(questionData)
                       vm.setState({
                         question: questionData.question,                        
                         code: questionData.code
@@ -84,7 +83,7 @@ class PresentQuestion extends WithQuizState {
   }
 
   get renderCode() {
-    return <code className="prettyprint">{this.state.code}</code>
+    return <code>{this.state.code}</code>
   }
 
   get renderAnswers() {
