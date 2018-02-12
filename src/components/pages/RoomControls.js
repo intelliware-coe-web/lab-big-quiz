@@ -9,6 +9,7 @@ const RoomControlsPage = ({match}) =>
     <div>
       <PreviousButton room-id={match.params.roomId}/>
       <NextButton room-id={match.params.roomId}/>
+      <ShowAnswerButton room-id={match.params.roomId}/>
     </div>
 
     <div>
@@ -35,7 +36,8 @@ class WithQuizState extends Component {
       var docRef = firebase.firestore.collection('rooms').doc(roomId);
 
       docRef.onSnapshot(function(roomSnapshot) {
-              vm.setState({currentQuestion: roomSnapshot.data()['current-question']});
+              vm.setState({currentQuestion: roomSnapshot.data().currentQuestion});
+              vm.setState({showAnswer: roomSnapshot.data().showAnswer})
             });
 
       docRef.collection('questions')
@@ -43,6 +45,32 @@ class WithQuizState extends Component {
               vm.setState({numQuestions: questionsSnapshot.size});
             });
     }
+  }
+}
+
+class ShowAnswerButton extends WithQuizState {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
+    var vm = this;
+
+    if (vm.state.roomId && vm.state.currentQuestion) {
+      firebase.firestore
+              .collection('rooms')
+              .doc(vm.state.roomId)
+              .update({
+                 'showAnswer': !vm.state.showAnswer
+              });
+    }
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}>Show Answer</button>
+    );
   }
 }
 
@@ -61,7 +89,8 @@ class PreviousButton extends WithQuizState {
               .collection('rooms')
               .doc(vm.state.roomId)
               .update({
-                 'current-question': vm.state.currentQuestion-1
+                 'currentQuestion': vm.state.currentQuestion-1,
+                 'showAnswer': false
               });
     }
   }
@@ -87,7 +116,8 @@ class NextButton extends WithQuizState {
               .collection('rooms')
               .doc(vm.state.roomId)
               .update({
-                 'current-question': vm.state.currentQuestion+1
+                 'currentQuestion': vm.state.currentQuestion+1,
+                 'showAnswer': false
               });
     }
   }
@@ -143,5 +173,6 @@ export default RoomControlsPage;
 export {
   QuizSetupForm,
   PreviousButton,
-  NextButton
+  NextButton,
+  ShowAnswerButton
 };

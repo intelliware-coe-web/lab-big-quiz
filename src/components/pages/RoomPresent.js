@@ -40,31 +40,39 @@ class PresentQuestion extends WithQuizState {
       var docRef = firebase.firestore.collection('rooms').doc(roomId);
 
       docRef.onSnapshot(function(roomSnapshot) {
-              var questionNumber = roomSnapshot.data()['current-question'];
+              var questionNumber = roomSnapshot.data().currentQuestion;
               vm.setState({currentQuestion: questionNumber});
+              vm.setState({showAnswer: roomSnapshot.data().showAnswer});
               docRef.collection('questions')
                     .where('number', '==', questionNumber)
                     .onSnapshot(function(questionSnapshot) {
-                      console.log(questionSnapshot)
-                      vm.setState({question: questionSnapshot.docs[0].data().question})
-                      vm.setState({code: questionSnapshot.docs[0].data().code})
+                      vm.setState({question: questionSnapshot.docs[0].data().question});
+                      vm.setState({code: questionSnapshot.docs[0].data().code});
 
-                      docRef.collection('questions').doc(questionSnapshot.docs[0].id)
-                                      .collection('answers')
-                                      .get()
-                                      .then(function(answersSnapshot) {
-                                        var answers = []
-                                        answersSnapshot.forEach(function(answer) {
-                                          answers.push({id: answer.data().id, answer: answer.data().answer});
-                                        });
-                                        vm.setState({
-                                          'answers': answers,
-                                          'fetched': true
-                                        });
-                                      })
+                      docRef.collection('questions')
+                            .doc(questionSnapshot.docs[0].id)
+                            .collection('answers')
+                            .get()
+                            .then(function(answersSnapshot) {
+                              var answers = []
+                              answersSnapshot.forEach(function(answer) {
+                                answers.push({
+                                  id: answer.data().id, 
+                                  answer: answer.data().answer, 
+                                  correct: answer.data().correct});
+                              });
+                              vm.setState({
+                                'answers': answers,
+                                'fetched': true
+                              });
+                            })
                   });
             });
     }
+  }
+
+  get isCorrect() {
+    return this.state.showAnswer ? 'show-answer': 'hide-answer';
   }
 
   get renderQuestion() {
@@ -74,7 +82,7 @@ class PresentQuestion extends WithQuizState {
   get renderAnswers() {
     const answers = this.state.answers;
     return answers.map((answer, index) => {
-      return <li key={answer.id}>{answer.answer}</li>
+      return <li key={index} id={answer.id} data-correct={answer.correct} className={this.isCorrect}>{answer.answer}</li>
     });
   }
 

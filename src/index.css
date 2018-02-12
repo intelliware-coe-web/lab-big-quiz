@@ -3,3 +3,7 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.show-answer[data-correct="true"] {
+  font-weight: bold;
+}
