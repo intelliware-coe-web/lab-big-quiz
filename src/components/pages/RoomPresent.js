@@ -42,12 +42,16 @@ class PresentQuestion extends WithQuizState {
       docRef.onSnapshot(function(roomSnapshot) {
               var questionNumber = roomSnapshot.data().currentQuestion;
               vm.setState({currentQuestion: questionNumber});
-              vm.setState({showAnswer: roomSnapshot.data().showAnswer});
+              vm.setState({showAnswer: roomSnapshot.data().showAnswer});              
               docRef.collection('questions')
                     .where('number', '==', questionNumber)
                     .onSnapshot(function(questionSnapshot) {
-                      vm.setState({question: questionSnapshot.docs[0].data().question});
-                      vm.setState({code: questionSnapshot.docs[0].data().code});
+                      var questionData = questionSnapshot.docs[0].data();
+                      console.log(questionData)
+                      vm.setState({
+                        question: questionData.question,                        
+                        code: questionData.code
+                      });
 
                       docRef.collection('questions')
                             .doc(questionSnapshot.docs[0].id)
@@ -79,6 +83,10 @@ class PresentQuestion extends WithQuizState {
     return <h1>{this.state.question}</h1>
   }
 
+  get renderCode() {
+    return <code className="prettyprint">{this.state.code}</code>
+  }
+
   get renderAnswers() {
     const answers = this.state.answers;
     return answers.map((answer, index) => {
@@ -90,7 +98,10 @@ class PresentQuestion extends WithQuizState {
     return (
       <div>
         <div>
-        {this.renderQuestion}
+          {this.renderQuestion}
+        </div>
+        <div>
+          {this.renderCode}
         </div>
         <ul>
           {this.renderAnswers}

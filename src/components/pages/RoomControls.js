@@ -35,7 +35,7 @@ class WithQuizState extends Component {
     if (roomId) {
       var docRef = firebase.firestore.collection('rooms').doc(roomId);
 
-      docRef.onSnapshot(function(roomSnapshot) {
+      docRef.onSnapshot(function(roomSnapshot) {        
               vm.setState({currentQuestion: roomSnapshot.data().currentQuestion});
               vm.setState({showAnswer: roomSnapshot.data().showAnswer})
             });
@@ -54,7 +54,7 @@ class ShowAnswerButton extends WithQuizState {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick(event) {
+  _showAnswer() {
     var vm = this;
 
     if (vm.state.roomId && vm.state.currentQuestion) {
@@ -67,6 +67,9 @@ class ShowAnswerButton extends WithQuizState {
     }
   }
 
+  handleClick(event) {
+    this._showAnswer();
+  }
   render() {
     return (
       <button onClick={this.handleClick}>Show Answer</button>
@@ -81,7 +84,7 @@ class PreviousButton extends WithQuizState {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick(event) {
+  _showPrevious() {
     var vm = this;
 
     if (vm.state.roomId && vm.state.currentQuestion) {
@@ -93,6 +96,10 @@ class PreviousButton extends WithQuizState {
                  'showAnswer': false
               });
     }
+  }
+
+  handleClick(event) {
+    this._showPrevious();
   }
 
   render() {
@@ -108,7 +115,7 @@ class NextButton extends WithQuizState {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick(event) {
+  _showNext() {
     var vm = this;
 
     if (vm.state.roomId && (vm.state.currentQuestion || vm.state.currentQuestion === 0) && vm.state.currentQuestion !== vm.state.numQuestions) {
@@ -120,6 +127,10 @@ class NextButton extends WithQuizState {
                  'showAnswer': false
               });
     }
+  }
+
+  handleClick(event) {
+    this._showNext();  
   }
 
   render() {
