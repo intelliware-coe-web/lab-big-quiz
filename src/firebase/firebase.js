@@ -3,12 +3,12 @@ const firebase = require("firebase");
 require("firebase/firestore");
 
 const prodConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_AUTH_DOMAIN',
-  databaseURL: 'YOUR_DATABASE_URL',
-  projectId: 'YOUR_PROJECT_ID',
+  apiKey: 'AIzaSyC2mymmDhvnK71oKrz3QumfqPMnpFymOAM',
+  authDomain: 'big-web-quiz-3c841.firebaseapp.com',
+  databaseURL: 'https://big-web-quiz-3c841.firebaseio.com',
+  projectId: 'big-web-quiz-3c841',
   storageBucket: '',
-  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+  messagingSenderId: '280316876134',
 };
 
 const devConfig = {
