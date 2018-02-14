@@ -3,7 +3,7 @@ import { firebase } from '../../firebase';
 
 const QuizPage = ({match}) =>
   <div>
-    <QuizComponent room-id={match.params.roomId}/>>
+    <QuizComponent room-id={match.params.roomId}/>
   </div>
 
 class QuizComponent extends Component {

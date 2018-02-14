@@ -20,14 +20,7 @@ Navigation.contextTypes = {
 const NavigationAuth = () =>
   <ul className="navigation">
     <li><Link to={routes.ROOM_LIST}>Room List</Link></li>
-    <li><Link to={routes.ROOM_CONTROLS}>Room Controls</Link></li>
-    <li><Link to={routes.ROOM_LEADERBOARD}>Room Leadboard</Link></li>
-    <li><Link to={routes.ROOM_PRESENT}>Room Presentation</Link></li>
-    <li><Link to={routes.ROOM_SCORE_BREAKDOWN}>Room Score Breakdown</Link></li>
-
     <li><Link to={routes.JOIN_ROOM}>Join Room</Link></li>
-    <li><Link to={routes.QUIZ}>Quiz</Link></li>
-
     <li><SignOutButton /></li>
   </ul>
 

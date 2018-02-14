@@ -22,7 +22,7 @@ import SignUpPage from './pages/SignUp';
 import * as routes from '../constants/routes';
 
 const App = () =>
-  <Router>
+  <Router forceRefresh="true">
     <div>
       <Navigation />
 
