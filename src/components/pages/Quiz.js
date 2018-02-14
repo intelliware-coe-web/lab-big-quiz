@@ -93,20 +93,29 @@ class QuizComponent extends Component {
     return this.state.showAnswer ? 'show-answer': 'hide-answer';
   }
 
+  get markup() {
+    return {__html: this.state.code.replace(/\\t/g, '\u00a0').replace(/\\n/g, '<br/>')};
+  }
+
   get renderQuestion() {
     return <h1>{this.state.question}</h1>
   }
 
   get renderCode() {
-    return <code>{this.state.code}</code>
+    return <code dangerouslySetInnerHTML={this.markup}></code>
   }
 
   get renderAnswers() {
     const answers = this.state.answers;
-    return answers.map((answer, index) => {
-      return <label key={index} id={answer.id} data-correct={answer.correct} className={this.isCorrect}>
-        {answer.answer}<input name={this.state.currentQuestion} type={this.state.hasMultipleCorrect ? "checkbox" : "radio"} value={answer.points} onChange={this.handleChange}/></label>
+    const answerList = answers.map((answer, index) => {
+      return <li key={index}>
+          <label id={answer.id} data-correct={answer.correct} className={this.isCorrect}>
+          {answer.answer }<input name={this.state.currentQuestion} type={this.state.hasMultipleCorrect ? "checkbox" : "radio"} 
+                                value={answer.points} onChange={this.handleChange}/>
+          </label></li>
     });
+
+    return <ul className="quiz-questions">{answerList}</ul>;
   }
 
   handleChange(event) {

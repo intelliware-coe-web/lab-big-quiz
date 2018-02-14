@@ -7,3 +7,7 @@ body {
 .show-answer[data-correct="true"] {
   font-weight: bold;
 }
+
+.quiz-questions {
+  list-style-type: none;
+}
