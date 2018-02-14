@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { firebase } from '../../firebase';
+import ReactGist from 'react-gist';
 
 const QuizPage = ({match}) =>
   <div>
@@ -93,16 +94,12 @@ class QuizComponent extends Component {
     return this.state.showAnswer ? 'show-answer': 'hide-answer';
   }
 
-  get markup() {
-    return {__html: this.state.code.replace(/\\t/g, '\u00a0').replace(/\\n/g, '<br/>')};
-  }
-
   get renderQuestion() {
     return <h1>{this.state.question}</h1>
   }
 
   get renderCode() {
-    return <code dangerouslySetInnerHTML={this.markup}></code>
+    return this.state.code ? <ReactGist id="ba19438c5958d314752dc3d5973e855c" file={this.state.code}/> : null;
   }
 
   get renderAnswers() {
