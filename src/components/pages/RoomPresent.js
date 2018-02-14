@@ -72,8 +72,12 @@ class PresentQuestion extends Component {
     return <h1>{this.state.question}</h1>
   }
 
+  get markup() {
+    return {__html: this.state.code.replace(/\\t/g, '\u00a0').replace(/\\n/g, '<br/>')};
+  }
+
   get renderCode() {
-    return <code>{this.state.code}</code>
+    return <code dangerouslySetInnerHTML={this.markup}></code>
   }
 
   get renderAnswers() {
