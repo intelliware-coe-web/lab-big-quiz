@@ -16,7 +16,8 @@ class PresentQuestion extends Component {
       currentQuestion: 0,
       question: '',
       code: '',
-      answers: []
+      answers: [],
+      players: []
     }
   }
 
@@ -31,8 +32,23 @@ class PresentQuestion extends Component {
 
       docRef.onSnapshot(function(roomSnapshot) {
               var questionNumber = roomSnapshot.data().currentQuestion;
-              vm.setState({currentQuestion: questionNumber});
-              vm.setState({showAnswer: roomSnapshot.data().showAnswer});
+              vm.setState({
+                currentQuestion: questionNumber,
+                showAnswer: roomSnapshot.data().showAnswer,
+                showScores: roomSnapshot.data().showScores
+              });
+  
+              docRef.collection('users')
+                    .orderBy('score', 'desc')
+                    .onSnapshot(function(querySnapshot) {
+                      var players = []
+                      querySnapshot.forEach(function(doc) {
+                        players.push({name: doc.data().name, score: doc.data().score});
+                      });
+                      vm.setState({
+                        'players': players
+                      });
+                    });
 
               docRef.collection('questions')
                     .where('number', '==', questionNumber)
@@ -70,7 +86,7 @@ class PresentQuestion extends Component {
   }
 
   get renderQuestion() {
-    return <h1>{this.state.question}</h1>
+    return <h1>#{this.state.currentQuestion} {this.state.question}</h1>
   }
 
   get renderCode() {
@@ -84,18 +100,29 @@ class PresentQuestion extends Component {
     });
   }
 
+  get renderQuestionSection() {
+    return <div>{this.renderQuestion}<div>{this.renderCode}</div><ul>{this.renderAnswers}</ul></div>;
+  }
+
+  get renderScores() {
+    return <ul>{this.renderPlayerScores}</ul>
+  }
+
+  get renderPlayerScores() {
+    const players = this.state.players;
+    return players.map((player, index) => {
+      return <li id={player.name + index}><h2><label>{player.name}:</label><span>{player.score}</span></h2></li>
+    });
+  }
+
+  get showQuestionOrScores() {
+    return !this.state.showScores ? this.renderQuestionSection : this.renderScores;
+  }
+
   render() {
     return (
       <div>
-        <div>
-          {this.renderQuestion}
-        </div>
-        <div>
-          {this.renderCode}
-        </div>
-        <ul>
-          {this.renderAnswers}
-        </ul>
+        {this.showQuestionOrScores}
       </div>
     );
   }

@@ -12,6 +12,7 @@ const RoomControlsPage = ({match}) =>
         <PreviousButton room-id={match.params.roomId}/>
         <NextButton room-id={match.params.roomId}/>
         <ShowAnswerButton room-id={match.params.roomId}/>
+        <ShowScoresButton room-id={match.params.roomId}/>
       </div>
 
       <div>
@@ -26,7 +27,9 @@ class WithQuizState extends Component {
 
     this.state = {
       currentQuestion: 0,
-      numQuestions: 0
+      numQuestions: 0,
+      showAnswer: false,
+      showScores: false
     }
   }
   componentWillReceiveProps(newProps) {
@@ -41,7 +44,8 @@ class WithQuizState extends Component {
       docRef.onSnapshot(function(roomSnapshot) {        
               vm.setState({
                 currentQuestion: roomSnapshot.data().currentQuestion,
-                showAnswer: roomSnapshot.data().showAnswer
+                showAnswer: roomSnapshot.data().showAnswer,
+                showScores: roomSnapshot.data().showScores
               });
             });
 
@@ -82,6 +86,35 @@ class ShowAnswerButton extends WithQuizState {
   }
 }
 
+class ShowScoresButton extends WithQuizState {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  _showScores() {
+    var vm = this;
+
+    if (vm.state.roomId && vm.state.currentQuestion) {
+      firebase.firestore
+              .collection('rooms')
+              .doc(vm.state.roomId)
+              .update({
+                 'showScores': !vm.state.showScores
+              });
+    }
+  }
+
+  handleClick(event) {
+    this._showScores();
+  }
+  render() {
+    return (
+      <button onClick={this.handleClick}>Show Scores</button>
+    );
+  }
+}
+
 
 class PreviousButton extends WithQuizState {
   constructor(props) {
@@ -98,7 +131,8 @@ class PreviousButton extends WithQuizState {
               .doc(vm.state.roomId)
               .update({
                  'currentQuestion': vm.state.currentQuestion-1,
-                 'showAnswer': false
+                 'showAnswer': false,
+                 'showsScores': false
               });
     }
   }
@@ -129,7 +163,8 @@ class NextButton extends WithQuizState {
               .doc(vm.state.roomId)
               .update({
                  'currentQuestion': vm.state.currentQuestion+1,
-                 'showAnswer': false
+                 'showAnswer': false,
+                 'showsScores': false
               });
     }
   }
