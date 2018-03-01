@@ -118,10 +118,9 @@ class QuizComponent extends Component {
   handleChange(event) {
     let target = event.target;
 
-
     if (target.value) {
       let points = parseInt(target.checked ? target.value : -target.value);
-      let newScore = this.state.score + points;
+      let newScore = Number.isInteger(this.state.score) ? this.state.score + points : points;
       this.setState({
         score: newScore
       })
