@@ -38,7 +38,7 @@ class RoomList extends Component {
   get renderRoomItemsAsPresenter() {
     const rooms = this.state.rooms;
     return rooms.map((room, index) => {
-      return <li key={room.id}>{room.name}
+      return <li className="room-info" key={room.id}>{room.name}
         <Link to={'/rooms/' + room.id + '/controls'}>Controls</Link>
         <Link to={'/rooms/' + room.id + '/present'}>Present</Link>
       </li>
@@ -48,7 +48,7 @@ class RoomList extends Component {
   get renderRoomItemsAsUser() {
     const rooms = this.state.rooms;
     return rooms.map((room, index) => {
-      return <li key={room.id}>{room.name}
+      return <li className="room-info" key={room.id}>{room.name}
         <Link to={'/quiz/' + room.id}>Join</Link>
       </li>
     });

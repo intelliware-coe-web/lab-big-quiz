@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  padding: 0;
+  padding: 10px;
   font-family: sans-serif;
 }
 
@@ -10,4 +10,18 @@ body {
 
 .quiz-questions {
   list-style-type: none;
+  padding: 0 0 0 10px;
+}
+
+#question-form {
+  padding: 0 15px;
+}
+
+#question-form input[type="submit"] {
+  border: 1px solid black;
+  padding: 10px 20px;
+}
+
+.room-info a {
+  padding: 0 5px;
 }

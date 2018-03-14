@@ -5,7 +5,6 @@ import {
 } from 'react-router-dom'
 
 import withAuthentication from './auth/withAuthentication';
-import Navigation from './Navigation';
 
 import RoomListPage from './pages/RoomList';
 import RoomControlsPage from './pages/RoomControls';
@@ -24,10 +23,6 @@ import * as routes from '../constants/routes';
 const App = () =>
   <Router forceRefresh={true}>
     <div>
-      <Navigation />
-
-      <hr/>
-
       <Route exact path={routes.ROOM_LIST} component={ RoomListPage }/>
       <Route exact path={routes.ROOM_CONTROLS} component={ RoomControlsPage } />
       <Route exact path={routes.ROOM_LEADERBOARD} component={ RoomLeaderboardPage } />

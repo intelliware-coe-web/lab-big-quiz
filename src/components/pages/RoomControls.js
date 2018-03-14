@@ -14,10 +14,6 @@ const RoomControlsPage = ({match}) =>
         <ShowAnswerButton room-id={match.params.roomId}/>
         <ShowScoresButton room-id={match.params.roomId}/>
       </div>
-
-      <div>
-        <QuizSetupForm room-id={match.params.roomId}/>
-      </div>
     </div>
   </div>
 

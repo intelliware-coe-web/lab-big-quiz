@@ -107,8 +107,9 @@ class QuizComponent extends Component {
     const answerList = answers.map((answer, index) => {
       return <li key={index}>
           <label id={answer.id} data-correct={answer.correct} className={this.isCorrect}>
-          {answer.answer }<input name={this.state.currentQuestion} type={this.state.hasMultipleCorrect ? "checkbox" : "radio"} 
+            <input name={this.state.currentQuestion} type={this.state.hasMultipleCorrect ? "checkbox" : "radio"} 
                                 value={answer.points} onChange={this.handleChange}/>
+            {answer.answer }
           </label></li>
     });
 
@@ -129,7 +130,9 @@ class QuizComponent extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.state.usersRef.doc(firebase.user.uid).update({score: this.state.score});
+    if (!this.state.showAnswer) {
+      this.state.usersRef.doc(firebase.user.uid).update({score: this.state.score});
+    }
   }
 
   render() {
