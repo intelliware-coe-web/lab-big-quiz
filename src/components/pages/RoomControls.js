@@ -7,13 +7,12 @@ const RoomControlsPage = ({match}) =>
   <div>
     <h1>Room Controls</h1>
 
-    <div className="container">
-      <div>
-        <PreviousButton room-id={match.params.roomId}/>
-        <NextButton room-id={match.params.roomId}/>
-        <ShowAnswerButton room-id={match.params.roomId}/>
-        <ShowScoresButton room-id={match.params.roomId}/>
-      </div>
+    <div>
+      <PreviousButton room-id={match.params.roomId}/>
+      <NextButton room-id={match.params.roomId}/>
+      <ShowAnswerButton room-id={match.params.roomId}/>
+      <ShowScoresButton room-id={match.params.roomId}/>
+      <ResetButton room-id={match.params.roomId}></ResetButton>
     </div>
   </div>
 
@@ -50,6 +49,47 @@ class WithQuizState extends Component {
               vm.setState({numQuestions: questionsSnapshot.size});
             });
     }
+  }
+}
+
+class ResetButton extends WithQuizState {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  _resetQuiz() {
+    var vm = this;
+
+    if (vm.state.roomId && vm.state.currentQuestion) {
+      var roomData = firebase.firestore
+                             .collection('rooms')
+                             .doc(vm.state.roomId);
+
+      roomData.collection('users')
+              .get()
+              .then(function(querySnapshot) {
+                querySnapshot.forEach(function(userSnapshot) {
+                  console.log(userSnapshot.id);
+                  roomData.collection('users').doc(userSnapshot.id).update({'score': 0});
+                });
+              });
+      
+      roomData.update({
+                 'currentQuestion': 1,
+                 'showAnswer': false,
+                 'showsScores': false
+              });
+    }
+  }
+
+  handleClick(event) {
+    this._resetQuiz();
+  }
+  render() {
+    return (
+      <button onClick={this.handleClick}>Reset Quiz</button>
+    );
   }
 }
 

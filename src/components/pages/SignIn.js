@@ -10,9 +10,6 @@ const SignInPage = ({ history }) =>
     <h1>SignIn</h1>
     <h3>Google Sign In</h3>
     <GoogleSignIn history={history} />
-    <h3>Email Sign In</h3>
-    <EmailSignIn history={history} />
-    <SignUpLink />
   </div>
 
 export default withRouter(SignInPage);
