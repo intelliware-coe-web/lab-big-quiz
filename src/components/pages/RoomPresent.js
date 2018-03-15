@@ -138,6 +138,7 @@ class PresentQuestion extends Component {
 
   get renderScores() {
     return <div className="playerScores">
+      <h1>Leaderboard</h1>
       <div className="top"><ul>{this.renderTopPlayerScores}</ul></div>
       <div className="non-top"><ul>{this.renderPlayerScores}</ul></div>
     </div>;
@@ -149,8 +150,8 @@ class PresentQuestion extends Component {
     return topPlayers.map((player, index) => {
       return <li key={'top-player-'+index}>
         <div><Gravatar email={player.email} default="robohash" size={250}></Gravatar></div>
-        <div>{player.name}</div>
-        <div>{player.score}</div>
+        <div><h3>{player.name}</h3></div>
+        <div><h4>{player.score}</h4></div>
       </li>;
     });
   }
@@ -161,8 +162,8 @@ class PresentQuestion extends Component {
     return players.map((player, index) => {
       return <li key={'non-top-player-'+index}>
         <div><Gravatar email={player.email} default="robohash" size={50}></Gravatar></div>
-        <div>{player.name}</div>
-        <div>{player.score}</div>
+        <div><h3>{player.name}</h3></div>
+        <div><h4>{player.score}</h4></div>
       </li>;
     });
   }

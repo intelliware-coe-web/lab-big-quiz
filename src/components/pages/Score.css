@@ -1,3 +1,61 @@
 .playerScores ul {
+  padding: 0;
+  margin: 0;
   list-style: none;
+}
+
+.playerScores .top ul {
+  display: flex;
+}
+
+
+.playerScores .top li {  
+  margin: 5px;
+  padding: 5px;
+  width: 30vw;
+  height: 350px;
+}
+
+.playerScores .top li div {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.playerScores .top li div h4 {
+  margin: 5px 0;
+}
+
+.playerScores .top li:nth-of-type(1) { 
+  background-color: gold;
+  order: 2; 
+}
+
+
+.playerScores .top li:nth-of-type(2) {
+  background-color: silver;
+  order: 1; 
+}
+
+.playerScores .top li:nth-of-type(3) {
+  background-color: burlywood;
+  order: 3;
+}
+
+
+.playerScores .non-top li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.playerScores .non-top li:nth-child(2n) {
+  background-color: lightblue;
+}
+
+.playerScores .non-top li > div {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  min-width: 100px;
 }
