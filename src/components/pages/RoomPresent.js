@@ -54,7 +54,6 @@ class PresentQuestion extends Component {
                   'players': players
                 });
               });
-<<<<<<< HEAD
 
         docRef.collection('questions')
               .where('number', '==', questionNumber)
@@ -82,49 +81,6 @@ class PresentQuestion extends Component {
                           'fetched': true
                         });
                       })
-=======
-  
-              docRef.collection('users')
-                    .orderBy('score', 'desc')
-                    .onSnapshot(function(querySnapshot) {
-                      var players = []
-                      querySnapshot.forEach(function(doc) {
-                        players.push(doc.data());
-                      });
-
-                      vm.setState({
-                        'players': players
-                      });
-                    });
-
-              docRef.collection('questions')
-                    .where('number', '==', questionNumber)
-                    .onSnapshot(function(questionSnapshot) {
-                      var questionData = questionSnapshot.docs[0].data();
-                      vm.setState({
-                        question: questionData.question,                        
-                        code: questionData.code
-                      });
-
-                      docRef.collection('questions')
-                            .doc(questionSnapshot.docs[0].id)
-                            .collection('answers')
-                            .get()
-                            .then(function(answersSnapshot) {
-                              var answers = []
-                              answersSnapshot.forEach(function(answer) {
-                                answers.push({
-                                  id: answer.data().id, 
-                                  answer: answer.data().answer, 
-                                  correct: answer.data().correct});
-                              });
-                              vm.setState({
-                                'answers': answers,
-                                'fetched': true
-                              });
-                            })
-                  });
->>>>>>> fixing scoring and showing gravatars
             });
       });
     }
@@ -176,13 +132,9 @@ class PresentQuestion extends Component {
   get renderPlayerScores() {
     const players = this.state.players;
     return players.map((player, index) => {
-<<<<<<< HEAD
-      return <li key={index} id={player.name + index}><h2><label>{player.name}:</label><span>{player.score}</span></h2></li>
-=======
       return <li key={'player-'+index}><h2>
         <Gravatar email={player.email} rating="pg" default="robohash" size={250}></Gravatar>
         <label>{player.name}:</label><span>{player.score}</span></h2></li>
->>>>>>> fixing scoring and showing gravatars
     });
   }
 
