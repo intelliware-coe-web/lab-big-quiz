@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { firebase } from '../../firebase';
 import ReactGist from 'react-gist';
-import PRESENTATION_STATE from '../../constants/presentationState';
 import Gravatar from 'react-gravatar';
+import PRESENTATION_STATE from '../../constants/presentationState';
+
+import './Score.css';
 
 const RoomPresentPage = ({match}) =>
   <div>
@@ -19,7 +21,8 @@ class PresentQuestion extends Component {
       question: '',
       code: '',
       answers: [],
-      players: []
+      players: [],
+      topPlayers: []
     }
   }
 
@@ -34,6 +37,7 @@ class PresentQuestion extends Component {
 
       docRef.onSnapshot(function(roomSnapshot) {
         var questionNumber = roomSnapshot.data().currentQuestion;
+
         vm.setState({
           currentQuestion: questionNumber,
           showAnswer: roomSnapshot.data().showAnswer,
@@ -43,16 +47,22 @@ class PresentQuestion extends Component {
         docRef.collection('users')
               .orderBy('score', 'desc')
               .onSnapshot(function(querySnapshot) {
-                var players = []
+                let topPlayers = [];
+                let players = [];
+                let index = 0;
+
                 querySnapshot.forEach(function(doc) {
-                  players.push({
-                    name: doc.data().name,
-                    score: doc.data().score,
-                    answeredQuestions: doc.data().answeredQuestions || {}
-                  });
+                  if (index > 2) {
+                    players.push(doc.data());
+                  } else {
+                    topPlayers.push(doc.data());
+                  }
+                  index++;
                 });
+
                 vm.setState({
-                  'players': players
+                  'players': players,
+                  'topPlayers': topPlayers
                 });
               });
 
@@ -70,30 +80,20 @@ class PresentQuestion extends Component {
                 docRef.collection('questions').doc(questionId)
                       .collection('answers').get()
                       .then(function(answersSnapshot) {
-
-                        let answerBreakdown = {};
-                        vm.state.players.forEach(player => {
-                          let selectedAnswerIds = player.answeredQuestions[questionId] || [];
-                          selectedAnswerIds.forEach(answerId => {
-                            answerBreakdown[answerId] = answerBreakdown[answerId] || 0;
-                            answerBreakdown[answerId]++;
-                          });
-                        });
-
                         var answers = [];
                         answersSnapshot.forEach(function(answer) {
                           answers.push({
                             id: answer.id,
-                            breakdown: answerBreakdown[answer.id],
                             answer: answer.data().answer,
                             correct: answer.data().correct
                           });
                         });
+
                         vm.setState({
                           'answers': answers,
                           'fetched': true
                         });
-                      })
+                      });
             });
       });
     }
@@ -133,31 +133,50 @@ class PresentQuestion extends Component {
       </li>
     });
 
-    return <ul className="quiz-questions">{scoreBreakdown}</ul>
+    return <ul className="quiz-questions">{scoreBreakdown}</ul>;
   }
 
   get renderScores() {
-    const players = this.state.players;
-    const playerScores = players.map((player, index) => {
-      return <li key={'player-'+index}><h2>
-        <Gravatar email={player.email} rating="pg" default="robohash" size={250}></Gravatar>
-        <label>{player.name}:</label><span>{player.score}</span></h2></li>
-    });
+    return <div className="playerScores">
+      <div className="top"><ul>{this.renderTopPlayerScores}</ul></div>
+      <div className="non-top"><ul>{this.renderPlayerScores}</ul></div>
+    </div>;
+  }
 
-    return <ul className="scores">{playerScores}</ul>
+  get renderTopPlayerScores() {
+    const topPlayers = this.state.topPlayers;
+
+    return topPlayers.map((player, index) => {
+      return <li key={'top-player-'+index}>
+        <div><Gravatar email={player.email} default="robohash" size={250}></Gravatar></div>
+        <div>{player.name}</div>
+        <div>{player.score}</div>
+      </li>;
+    });
+  }
+
+  get renderPlayerScores() {
+    const players = this.state.players;
+
+    return players.map((player, index) => {
+      return <li key={'non-top-player-'+index}>
+        <div><Gravatar email={player.email} default="robohash" size={50}></Gravatar></div>
+        <div>{player.name}</div>
+        <div>{player.score}</div>
+      </li>;
+    });
   }
 
   get renderRoomBasedOnPresentationState() {
-    return this.renderScoreBreakdownList;
-    // switch (this.state.presentationState) {
-    //   case PRESENTATION_STATE.SHOW_QUESTIONS:
-    //     return this.renderQuestionSection;
-    //   case PRESENTATION_STATE.SHOW_SCORE_BREAKDOWN:
-    //     return this.renderScoreBreakdownList;
-    //   case PRESENTATION_STATE.SHOW_SCORES:
-    //     return this.renderScores;
-    //   default: return this.renderQuestionSection;
-    // }
+    switch (this.state.presentationState) {
+      case PRESENTATION_STATE.SHOW_QUESTIONS:
+        return this.renderQuestionSection;
+      case PRESENTATION_STATE.SHOW_SCORE_BREAKDOWN:
+        return this.renderScoreBreakdownList;
+      case PRESENTATION_STATE.SHOW_SCORES:
+        return this.renderScores;
+      default: return this.renderQuestionSection;
+    }
   }
 
   render() {

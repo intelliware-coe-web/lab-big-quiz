@@ -128,10 +128,10 @@ class QuizComponent extends Component {
 
   markSelectedAnswers(answerIndex, selected = false) {
     const talliedAnswers = this.state.answers.map(answer => {
-      return {
+      return !this.state.hasMultipleCorrect ? {
         ...answer,
         selected: false
-      };
+      } : answer;
     });
     talliedAnswers[answerIndex].selected = selected;
 
@@ -163,18 +163,9 @@ class QuizComponent extends Component {
           return answer.id;
         });
 
-      this.state.userRef.get().then(userData => {
-        let questionId = this.state.questionId;
-        let existingAnsweredQuestions = userData.data().answeredQuestions || {};
-        existingAnsweredQuestions[questionId] = existingAnsweredQuestions[questionId] || [];
-        existingAnsweredQuestions[questionId] = existingAnsweredQuestions[questionId].concat(answeredQuestionIds);
-
-        return existingAnsweredQuestions;
-      }).then(existingAnsweredQuestions => {
-        this.state.userRef.update({
-          score: this.state.score,
-          answeredQuestions: existingAnsweredQuestions
-        });
+      this.state.userRef.update({
+        score: this.state.score,
+        answeredQuestions: answeredQuestionIds
       });
     }
   }
