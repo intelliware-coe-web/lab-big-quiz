@@ -108,8 +108,9 @@ class QuizComponent extends Component {
     const answerList = answers.map((answer, index) => {
       return <li key={index}>
           <label id={answer.id} data-correct={answer.correct} className={this.isCorrect}>
-            <input name={this.state.currentQuestion} type={this.state.hasMultipleCorrect ? "checkbox" : "radio"} 
-                                value={answer.points} onChange={this.handleChange}/>
+            <input name={this.state.currentQuestion} 
+                   type={this.state.hasMultipleCorrect ? "checkbox" : "radio"} 
+                   value={answer.points} onChange={this.handleChange}/>
             {answer.answer }
           </label></li>
     });
