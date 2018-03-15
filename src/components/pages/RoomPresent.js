@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { firebase } from '../../firebase';
 import ReactGist from 'react-gist';
-import PRESENTATION_STATE from '../../constants/presentationState';
 import Gravatar from 'react-gravatar';
+import PRESENTATION_STATE from '../../constants/presentationState';
+
+import './Score.css';
 
 const RoomPresentPage = ({match}) =>
   <div>
@@ -19,7 +21,8 @@ class PresentQuestion extends Component {
       question: '',
       code: '',
       answers: [],
-      players: []
+      players: [],
+      topPlayers: []
     }
   }
 
@@ -43,12 +46,22 @@ class PresentQuestion extends Component {
         docRef.collection('users')
               .orderBy('score', 'desc')
               .onSnapshot(function(querySnapshot) {
-                var players = []
+                let topPlayers = [];
+                let players = [];
+                let index = 0;
+
                 querySnapshot.forEach(function(doc) {
-                  players.push({name: doc.data().name, score: doc.data().score});
+                  if (index > 2) {
+                    players.push(doc.data());
+                  } else {
+                    topPlayers.push(doc.data());
+                  }
+                  index++;
                 });
+
                 vm.setState({
-                  'players': players
+                  'players': players,
+                  'topPlayers': topPlayers
                 });
               });
 
@@ -123,15 +136,33 @@ class PresentQuestion extends Component {
   }
 
   get renderScores() {
-    return <ul className="scores">{this.renderPlayerScores}</ul>
+    return <div className="playerScores">
+      <div className="top"><ul>{this.renderTopPlayerScores}</ul></div>
+      <div className="non-top"><ul>{this.renderPlayerScores}</ul></div>
+      </div>;
+  }
+
+  get renderTopPlayerScores() {
+    const topPlayers = this.state.topPlayers;
+
+    return topPlayers.map((player, index) => {
+      return <li key={'top-player-'+index}>
+        <div><Gravatar email={player.email} default="robohash" size={250}></Gravatar></div>
+        <div>{player.name}</div>
+        <div>{player.score}</div>
+      </li>;
+    });
   }
 
   get renderPlayerScores() {
     const players = this.state.players;
+
     return players.map((player, index) => {
-      return <li key={'player-'+index}><h2>
-        <Gravatar email={player.email} rating="pg" default="robohash" size={250}></Gravatar>
-        <label>{player.name}:</label><span>{player.score}</span></h2></li>
+      return <li key={'non-top-player-'+index}>
+        <div><Gravatar email={player.email} default="robohash" size={50}></Gravatar></div>
+        <div>{player.name}</div>
+        <div>{player.score}</div>
+      </li>;
     });
   }
 
