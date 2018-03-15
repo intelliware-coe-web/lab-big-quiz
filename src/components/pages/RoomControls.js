@@ -78,7 +78,7 @@ class ResetButton extends WithQuizState {
       roomData.update({
                  'currentQuestion': 1,
                  'showAnswer': false,
-                 'showsScores': false
+                 'showScores': false
               });
     }
   }

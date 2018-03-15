@@ -96,7 +96,7 @@ class PresentQuestion extends Component {
   get renderAnswers() {
     const answers = this.state.answers;
     return answers.map((answer, index) => {
-      return <li key={index} id={answer.id} data-correct={answer.correct} className={this.isCorrect}>{answer.answer}</li>
+      return <li key={'answer'+index} id={answer.id} data-correct={answer.correct} className={this.isCorrect}>{answer.answer}</li>
     });
   }
 
@@ -105,13 +105,13 @@ class PresentQuestion extends Component {
   }
 
   get renderScores() {
-    return <ul>{this.renderPlayerScores}</ul>
+    return <ul className="scores">{this.renderPlayerScores}</ul>
   }
 
   get renderPlayerScores() {
     const players = this.state.players;
     return players.map((player, index) => {
-      return <li id={player.name + index}><h2><label>{player.name}:</label><span>{player.score}</span></h2></li>
+      return <li id={'player-'+index}><h2><label>{player.name}:</label><span>{player.score}</span></h2></li>
     });
   }
 
@@ -121,7 +121,7 @@ class PresentQuestion extends Component {
 
   render() {
     return (
-      <div>
+      <div className="present">
         {this.showQuestionOrScores}
       </div>
     );
