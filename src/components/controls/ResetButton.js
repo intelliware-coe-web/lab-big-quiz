@@ -22,11 +22,14 @@ class ResetButton extends WithQuizState {
               .get()
               .then(function(querySnapshot) {
                   querySnapshot.forEach(function(userSnapshot) {
-                  console.log(userSnapshot.id);
-                  roomData.collection('users').doc(userSnapshot.id).update({'score': 0});
+                    console.log(userSnapshot.id);
+                    roomData.collection('users').doc(userSnapshot.id).update({
+                      score: 0,
+                      answeredQuestions: {}
+                    });
                   });
               });
-      
+
       roomData.update({
           'currentQuestion': 1,
           'showAnswer': false,

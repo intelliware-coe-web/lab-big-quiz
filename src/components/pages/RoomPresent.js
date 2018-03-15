@@ -45,7 +45,11 @@ class PresentQuestion extends Component {
               .onSnapshot(function(querySnapshot) {
                 var players = []
                 querySnapshot.forEach(function(doc) {
-                  players.push({name: doc.data().name, score: doc.data().score});
+                  players.push({
+                    name: doc.data().name,
+                    score: doc.data().score,
+                    answeredQuestions: doc.data().answeredQuestions || {}
+                  });
                 });
                 vm.setState({
                   'players': players
@@ -56,22 +60,34 @@ class PresentQuestion extends Component {
               .where('number', '==', questionNumber)
               .onSnapshot(function(questionSnapshot) {
                 var questionData = questionSnapshot.docs[0].data();
+                let questionId = questionSnapshot.docs[0].id;
+
                 vm.setState({
                   question: questionData.question,
                   code: questionData.code
                 });
 
-                docRef.collection('questions')
-                      .doc(questionSnapshot.docs[0].id)
-                      .collection('answers')
-                      .get()
+                docRef.collection('questions').doc(questionId)
+                      .collection('answers').get()
                       .then(function(answersSnapshot) {
-                        var answers = []
+
+                        let answerBreakdown = {};
+                        vm.state.players.forEach(player => {
+                          let selectedAnswerIds = player.answeredQuestions[questionId] || [];
+                          selectedAnswerIds.forEach(answerId => {
+                            answerBreakdown[answerId] = answerBreakdown[answerId] || 0;
+                            answerBreakdown[answerId]++;
+                          });
+                        });
+
+                        var answers = [];
                         answersSnapshot.forEach(function(answer) {
                           answers.push({
-                            id: answer.data().id,
+                            id: answer.id,
+                            breakdown: answerBreakdown[answer.id],
                             answer: answer.data().answer,
-                            correct: answer.data().correct});
+                            correct: answer.data().correct
+                          });
                         });
                         vm.setState({
                           'answers': answers,
@@ -107,12 +123,8 @@ class PresentQuestion extends Component {
   }
 
   get renderScoreBreakdownList() {
-    return <ul className="quiz-questions">{this.renderScoreBreakdown}</ul>
-  }
-
-  get renderScoreBreakdown() {
     const answers = this.state.answers;
-    return answers.map((answer, index) => {
+    const scoreBreakdown = answers.map((answer, index) => {
       return <li key={index} id={answer.id} data-correct={answer.correct} className={this.isCorrect}>
         <h2>
           <label>{answer.answer}: </label>
@@ -120,31 +132,32 @@ class PresentQuestion extends Component {
         </h2>
       </li>
     });
+
+    return <ul className="quiz-questions">{scoreBreakdown}</ul>
   }
 
   get renderScores() {
-    return <ul className="scores">{this.renderPlayerScores}</ul>
-  }
-
-  get renderPlayerScores() {
     const players = this.state.players;
-    return players.map((player, index) => {
+    const playerScores = players.map((player, index) => {
       return <li key={'player-'+index}><h2>
         <Gravatar email={player.email} rating="pg" default="robohash" size={250}></Gravatar>
         <label>{player.name}:</label><span>{player.score}</span></h2></li>
     });
+
+    return <ul className="scores">{playerScores}</ul>
   }
 
   get renderRoomBasedOnPresentationState() {
-    switch (this.state.presentationState) {
-      case PRESENTATION_STATE.SHOW_QUESTIONS:
-        return this.renderQuestionSection;
-      case PRESENTATION_STATE.SHOW_SCORE_BREAKDOWN:
-        return this.renderScoreBreakdownList;
-      case PRESENTATION_STATE.SHOW_SCORES:
-        return this.renderScores;
-      default: return this.renderQuestionSection;
-    }
+    return this.renderScoreBreakdownList;
+    // switch (this.state.presentationState) {
+    //   case PRESENTATION_STATE.SHOW_QUESTIONS:
+    //     return this.renderQuestionSection;
+    //   case PRESENTATION_STATE.SHOW_SCORE_BREAKDOWN:
+    //     return this.renderScoreBreakdownList;
+    //   case PRESENTATION_STATE.SHOW_SCORES:
+    //     return this.renderScores;
+    //   default: return this.renderQuestionSection;
+    // }
   }
 
   render() {

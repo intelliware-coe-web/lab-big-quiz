@@ -12,6 +12,7 @@ class QuizComponent extends Component {
     super(props);
     this.state = {
       roomId: null,
+      questionId: null,
       numQuestions: 0,
       currentQuestion: 0,
       question: '',
@@ -19,7 +20,7 @@ class QuizComponent extends Component {
       hasMultipleCorrect: false,
       answers: [],
       score: 0,
-      usersRef: null
+      userRef: null
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -37,8 +38,10 @@ class QuizComponent extends Component {
 
       docRef.onSnapshot(function(roomSnapshot) {
         var questionNumber = roomSnapshot.data().currentQuestion;
-        vm.setState({currentQuestion: questionNumber});
-        vm.setState({showAnswer: roomSnapshot.data().showAnswer});
+        vm.setState({
+          currentQuestion: questionNumber,
+          showAnswer: roomSnapshot.data().showAnswer
+        });
 
         if (firebase.user) {
           let userRef = docRef.collection('users').doc(firebase.user.uid);
@@ -50,24 +53,24 @@ class QuizComponent extends Component {
                 name: firebase.user.displayName,
                 email: firebase.user.email,
                 score: 0
-              });   
+              });
             }
           })        
         } else {
           window.location('/');
-        }
-                          
+        }                          
 
         docRef.collection('questions')
           .where('number', '==', questionNumber)
           .onSnapshot(function(questionSnapshot) {
             var questionData = questionSnapshot.docs[0].data();
             vm.setState({
-              question: questionData.question,                        
+              question: questionData.question,
+              questionId: questionSnapshot.docs[0].id,
               code: questionData.code,
               hasMultipleCorrect: questionData.hasMultipleCorrect
             });
-
+            
             document.getElementById('question-form').reset();
 
             docRef.collection('questions')
@@ -78,8 +81,8 @@ class QuizComponent extends Component {
                 var answers = []
                 answersSnapshot.forEach(function(answer) {
                   answers.push({
-                    id: answer.data().id, 
-                    answer: answer.data().answer, 
+                    id: answer.id,
+                    answer: answer.data().answer,
                     correct: answer.data().correct,
                     points: answer.data().points
                   });
@@ -88,7 +91,7 @@ class QuizComponent extends Component {
                   'answers': answers,
                   'fetched': true
                 });
-              });                  
+              });
         });
       });      
     }
@@ -113,15 +116,31 @@ class QuizComponent extends Component {
           <label id={answer.id} data-correct={answer.correct} className={this.isCorrect}>
             <input name={this.state.currentQuestion} 
                    type={this.state.hasMultipleCorrect ? "checkbox" : "radio"} 
-                   value={answer.points} onChange={this.handleChange}/>
-            {answer.answer }
-          </label></li>
+                   value={answer.points} 
+                   onChange={this.handleChange(index)}/>
+            {answer.answer}
+          </label>
+        </li>
     });
 
     return <ul className="quiz-questions">{answerList}</ul>;
   }
 
-  handleChange(event) {
+  markSelectedAnswers(answerIndex, selected = false) {
+    const talliedAnswers = this.state.answers.map(answer => {
+      return {
+        ...answer,
+        selected: false
+      };
+    });
+    talliedAnswers[answerIndex].selected = selected;
+
+    this.setState({
+      answers: talliedAnswers
+    });
+  }
+
+  handleChange = (answerIndex) => (event) => {
     let target = event.target;
 
     if (target.value) {
@@ -130,13 +149,33 @@ class QuizComponent extends Component {
       this.setState({
         score: newScore
       });
+
+      this.markSelectedAnswers(answerIndex, target.checked);
     }
   }
 
   handleSubmit(event) {
     event.preventDefault();
     if (!this.state.showAnswer) {
-      this.state.userRef.update({score: this.state.score});
+      const answeredQuestionIds = this.state.answers
+        .filter(answer => answer.selected)
+        .map(answer => {
+          return answer.id;
+        });
+
+      this.state.userRef.get().then(userData => {
+        let questionId = this.state.questionId;
+        let existingAnsweredQuestions = userData.data().answeredQuestions || {};
+        existingAnsweredQuestions[questionId] = existingAnsweredQuestions[questionId] || [];
+        existingAnsweredQuestions[questionId] = existingAnsweredQuestions[questionId].concat(answeredQuestionIds);
+
+        return existingAnsweredQuestions;
+      }).then(existingAnsweredQuestions => {
+        this.state.userRef.update({
+          score: this.state.score,
+          answeredQuestions: existingAnsweredQuestions
+        });
+      });
     }
   }
 
