@@ -52,12 +52,7 @@ class QuizComponent extends Component {
                 score: 0
               });   
             }
-          })
-          userRef.update({
-                    name: firebase.user.displayName,
-                    email: firebase.user.email,
-                    score: 0
-                  });     
+          })        
         } else {
           window.location('/');
         }
