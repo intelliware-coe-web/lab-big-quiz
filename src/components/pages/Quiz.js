@@ -44,10 +44,18 @@ class QuizComponent extends Component {
           let userRef = docRef.collection('users').doc(firebase.user.uid);
           vm.setState({userRef: userRef});
 
+          userRef.get().then(function(userData) {
+            if (!userData) {
+              userRef.set({
+                name: firebase.user.displayName,
+                email: firebase.user.email,
+                score: 0
+              });   
+            }
+          })
           userRef.update({
                     name: firebase.user.displayName,
                     email: firebase.user.email,
-                    photoURL: firebase.user.photoURL ? firebase.user.photoURL : '',
                     score: 0
                   });     
         } else {
