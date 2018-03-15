@@ -40,6 +40,21 @@ class QuizComponent extends Component {
         vm.setState({currentQuestion: questionNumber});
         vm.setState({showAnswer: roomSnapshot.data().showAnswer});
 
+        if (firebase.user) {
+          let userRef = docRef.collection('users').doc(firebase.user.uid);
+          vm.setState({userRef: userRef});
+
+          userRef.update({
+                    name: firebase.user.displayName,
+                    email: firebase.user.email,
+                    photoURL: firebase.user.photoURL ? firebase.user.photoURL : '',
+                    score: 0
+                  });     
+        } else {
+          window.location('/');
+        }
+                          
+
         docRef.collection('questions')
           .where('number', '==', questionNumber)
           .onSnapshot(function(questionSnapshot) {
@@ -51,9 +66,6 @@ class QuizComponent extends Component {
             });
 
             document.getElementById('question-form').reset();
-
-            let usersRef = docRef.collection('users');
-            vm.setState({usersRef: usersRef});
 
             docRef.collection('questions')
               .doc(questionSnapshot.docs[0].id)
@@ -73,20 +85,9 @@ class QuizComponent extends Component {
                   'answers': answers,
                   'fetched': true
                 });
-              });
-
-            usersRef.where('email', '==', firebase.user.email)
-              .get().then(users => {
-                if (users.size === 0) {
-                  usersRef.doc(firebase.user.uid).set({
-                    name: firebase.user.displayName,
-                    email: firebase.user.email,
-                    score: 0
-                  });
-                }                
-              });
-            });    
+              });                  
         });
+      });      
     }
   }
 
@@ -131,7 +132,7 @@ class QuizComponent extends Component {
   handleSubmit(event) {
     event.preventDefault();
     if (!this.state.showAnswer) {
-      this.state.usersRef.doc(firebase.user.uid).update({score: this.state.score});
+      this.state.userRef.update({score: this.state.score});
     }
   }
 
