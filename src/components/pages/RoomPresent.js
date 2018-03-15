@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { firebase } from '../../firebase';
 import ReactGist from 'react-gist';
+import PRESENTATION_STATE from '../../constants/presentationState';
 
 const RoomPresentPage = ({match}) =>
   <div>
@@ -31,53 +32,53 @@ class PresentQuestion extends Component {
       var docRef = firebase.firestore.collection('rooms').doc(roomId);
 
       docRef.onSnapshot(function(roomSnapshot) {
-              var questionNumber = roomSnapshot.data().currentQuestion;
-              vm.setState({
-                currentQuestion: questionNumber,
-                showAnswer: roomSnapshot.data().showAnswer,
-                showScores: roomSnapshot.data().showScores
+        var questionNumber = roomSnapshot.data().currentQuestion;
+        vm.setState({
+          currentQuestion: questionNumber,
+          showAnswer: roomSnapshot.data().showAnswer,
+          presentationState: roomSnapshot.data().presentationState
+        });
+
+        docRef.collection('users')
+              .orderBy('score', 'desc')
+              .onSnapshot(function(querySnapshot) {
+                var players = []
+                querySnapshot.forEach(function(doc) {
+                  players.push({name: doc.data().name, score: doc.data().score});
+                });
+                vm.setState({
+                  'players': players
+                });
               });
-  
-              docRef.collection('users')
-                    .orderBy('score', 'desc')
-                    .onSnapshot(function(querySnapshot) {
-                      var players = []
-                      querySnapshot.forEach(function(doc) {
-                        players.push({name: doc.data().name, score: doc.data().score});
-                      });
-                      vm.setState({
-                        'players': players
-                      });
-                    });
 
-              docRef.collection('questions')
-                    .where('number', '==', questionNumber)
-                    .onSnapshot(function(questionSnapshot) {
-                      var questionData = questionSnapshot.docs[0].data();
-                      vm.setState({
-                        question: questionData.question,                        
-                        code: questionData.code
-                      });
+        docRef.collection('questions')
+              .where('number', '==', questionNumber)
+              .onSnapshot(function(questionSnapshot) {
+                var questionData = questionSnapshot.docs[0].data();
+                vm.setState({
+                  question: questionData.question,
+                  code: questionData.code
+                });
 
-                      docRef.collection('questions')
-                            .doc(questionSnapshot.docs[0].id)
-                            .collection('answers')
-                            .get()
-                            .then(function(answersSnapshot) {
-                              var answers = []
-                              answersSnapshot.forEach(function(answer) {
-                                answers.push({
-                                  id: answer.data().id, 
-                                  answer: answer.data().answer, 
-                                  correct: answer.data().correct});
-                              });
-                              vm.setState({
-                                'answers': answers,
-                                'fetched': true
-                              });
-                            })
-                  });
+                docRef.collection('questions')
+                      .doc(questionSnapshot.docs[0].id)
+                      .collection('answers')
+                      .get()
+                      .then(function(answersSnapshot) {
+                        var answers = []
+                        answersSnapshot.forEach(function(answer) {
+                          answers.push({
+                            id: answer.data().id,
+                            answer: answer.data().answer,
+                            correct: answer.data().correct});
+                        });
+                        vm.setState({
+                          'answers': answers,
+                          'fetched': true
+                        });
+                      })
             });
+      });
     }
   }
 
@@ -104,6 +105,22 @@ class PresentQuestion extends Component {
     return <div>{this.renderQuestion}<div>{this.renderCode}</div><ul>{this.renderAnswers}</ul></div>;
   }
 
+  get renderScoreBreakdownList() {
+    return <ul className="quiz-questions">{this.renderScoreBreakdown}</ul>
+  }
+
+  get renderScoreBreakdown() {
+    const answers = this.state.answers;
+    return answers.map((answer, index) => {
+      return <li key={index} id={answer.id} data-correct={answer.correct} className={this.isCorrect}>
+        <h2>
+          <label>{answer.answer}: </label>
+          <span>TODO</span>
+        </h2>
+      </li>
+    });
+  }
+
   get renderScores() {
     return <ul className="scores">{this.renderPlayerScores}</ul>
   }
@@ -111,18 +128,26 @@ class PresentQuestion extends Component {
   get renderPlayerScores() {
     const players = this.state.players;
     return players.map((player, index) => {
-      return <li id={'player-'+index}><h2><label>{player.name}:</label><span>{player.score}</span></h2></li>
+      return <li key={index} id={player.name + index}><h2><label>{player.name}:</label><span>{player.score}</span></h2></li>
     });
   }
 
-  get showQuestionOrScores() {
-    return !this.state.showScores ? this.renderQuestionSection : this.renderScores;
+  get renderRoomBasedOnPresentationState() {
+    switch (this.state.presentationState) {
+      case PRESENTATION_STATE.SHOW_QUESTIONS:
+        return this.renderQuestionSection;
+      case PRESENTATION_STATE.SHOW_SCORE_BREAKDOWN:
+        return this.renderScoreBreakdownList;
+      case PRESENTATION_STATE.SHOW_SCORES:
+        return this.renderScores;
+      default: return this.renderQuestionSection;
+    }
   }
 
   render() {
     return (
       <div className="present">
-        {this.showQuestionOrScores}
+        {this.renderRoomBasedOnPresentationState}
       </div>
     );
   }

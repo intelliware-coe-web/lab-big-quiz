@@ -1,8 +1,9 @@
 import { Component } from 'react';
 import { firebase } from '../../firebase';
+import PRESENTATION_STATE from '../../constants/presentationState';
 
 class WithQuizState extends Component {
-  
+
     constructor(props) {
       super(props);
   
@@ -10,7 +11,7 @@ class WithQuizState extends Component {
         currentQuestion: 0,
         numQuestions: 0,
         showAnswer: false,
-        showScores: false
+        presentationState: PRESENTATION_STATE.SHOW_QUESTIONS
       }
     }
 
@@ -27,7 +28,7 @@ class WithQuizState extends Component {
           vm.setState({
             currentQuestion: roomSnapshot.data().currentQuestion,
             showAnswer: roomSnapshot.data().showAnswer,
-            showScores: roomSnapshot.data().showScores
+            presentationState: roomSnapshot.data().presentationState
           });
         });
   

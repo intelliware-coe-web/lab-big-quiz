@@ -66,10 +66,6 @@ class RoomList extends Component {
     }    
   }
 
-  handleJoin() {
-    alert('Join Room');
-  }
-
   render() {
     return (
       <div>

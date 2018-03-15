@@ -126,7 +126,7 @@ class QuizComponent extends Component {
       let newScore = Number.isInteger(this.state.score) ? this.state.score + points : points;
       this.setState({
         score: newScore
-      })
+      });
     }
   }
 
