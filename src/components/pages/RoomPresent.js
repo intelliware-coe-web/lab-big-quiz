@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { firebase } from '../../firebase';
 import ReactGist from 'react-gist';
-<<<<<<< HEAD
 import PRESENTATION_STATE from '../../constants/presentationState';
-=======
 import Gravatar from 'react-gravatar';
->>>>>>> fixing scoring and showing gravatars
 
 const RoomPresentPage = ({match}) =>
   <div>
