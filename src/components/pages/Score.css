@@ -12,7 +12,7 @@
   margin-bottom: 20px;
 }
 
-.playerScores .top ul {
+.playerScores .top ul, .playerScores .non-top li  {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -25,7 +25,7 @@
   height: 350px;
 }
 
-.playerScores .top li > div {
+.playerScores li > div {
   display: flex;
   align-content: center;
   justify-content: center;
@@ -40,7 +40,6 @@
   order: 2; 
 }
 
-
 .playerScores .top li:nth-of-type(2) {
   background-color: silver;
   order: 1; 
@@ -51,20 +50,10 @@
   order: 3;
 }
 
-
-.playerScores .non-top li {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-}
-
 .playerScores .non-top li:nth-child(2n) {
   background-color: lightblue;
 }
 
 .playerScores .non-top li > div {
-  display: flex;
-  align-content: center;
-  justify-content: center;
   min-width: 100px;
 }

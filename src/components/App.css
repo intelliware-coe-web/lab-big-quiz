@@ -1,3 +1,12 @@
 .login-form input {
   margin-bottom: 20px;
 }
+
+.show-answer[data-correct="true"] {
+  font-weight: bold;
+}
+
+.quiz-questions {
+  list-style-type: none;
+  padding: 0 0 0 10px;
+}

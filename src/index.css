@@ -2,24 +2,31 @@ body {
   margin: 0;
   padding: 10px;
   font-family: sans-serif;
+  font-size: 25px;
 }
 
-.show-answer[data-correct="true"] {
-  font-weight: bold;
+h1 {
+  font-size: 1.5em;
 }
 
-.quiz-questions {
-  list-style-type: none;
-  padding: 0 0 0 10px;
+h2 {
+  font-size: 1.4em;
 }
 
-#question-form {
-  padding: 0 15px;
+h3 {
+  font-size: 1.3em;
 }
 
-#question-form input[type="submit"] {
-  border: 1px solid black;
-  padding: 10px 20px;
+h4 {
+  font-size: 1.2em;
+}
+
+h5 {
+  font-size: 1.1em;
+}
+
+h6 {
+  font-size: 1em;
 }
 
 .room-info a {

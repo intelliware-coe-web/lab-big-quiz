@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { firebase } from '../../firebase';
 import ReactGist from 'react-gist';
 
+import './Quiz.css';
+
 const QuizPage = ({match}) =>
   <div>
     <QuizComponent room-id={match.params.roomId}/>
@@ -172,7 +174,7 @@ class QuizComponent extends Component {
 
   render() {
     return (
-      <div>
+      <div className="quiz">
         <div>
           {this.renderQuestion}
         </div>
