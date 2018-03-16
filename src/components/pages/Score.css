@@ -1,5 +1,14 @@
+.playerScores {
+  font-size: 16px;
+}
+
 .playerScores h1 {
+  font-size: 2em;
   text-align: center;
+}
+
+.playerScores h3 {
+  margin: auto;
 }
 
 .playerScores ul {
