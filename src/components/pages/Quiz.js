@@ -38,13 +38,13 @@ class QuizComponent extends Component {
 
     if (roomId) {
       var docRef = firebase.firestore.collection('rooms').doc(roomId);
-
+      
       if (firebase.user) {
         let userRef = docRef.collection('users').doc(firebase.user.uid);
         vm.setState({userRef: userRef});
 
         userRef.get().then(function(userData) {
-          if (!userData) {
+          if (!userData.data()) {            
             userRef.set({
               name: firebase.user.displayName,
               email: firebase.user.email,
@@ -75,7 +75,7 @@ class QuizComponent extends Component {
           .where('number', '==', questionNumber)
           .get()
           .then(function(questionSnapshot) {
-            var questionData = questionSnapshot.docs[0].data();
+            let questionData = questionSnapshot.docs[0].data();
             vm.setState({
               question: questionData.question,
               questionId: questionSnapshot.docs[0].id,
@@ -90,7 +90,7 @@ class QuizComponent extends Component {
               .collection('answers')
               .get()
               .then(function(answersSnapshot) {
-                var answers = []
+                let answers = []
                 answersSnapshot.forEach(function(answer) {
                   answers.push({
                     id: answer.id,
@@ -157,7 +157,7 @@ class QuizComponent extends Component {
 
     if (target.value) {
       let points = parseInt(target.checked ? target.value : -target.value);
-
+      points = Number.isNaN(points) ? 0 : points;
       let newScore = Number.isInteger(this.state.score) ? this.state.score + points : points;
 
       this.setState({
@@ -183,6 +183,8 @@ class QuizComponent extends Component {
         score: updatedScore,
         answeredQuestions: answeredQuestionIds
       });
+
+      this.setState({ score: 0 });
     }
   }
 
