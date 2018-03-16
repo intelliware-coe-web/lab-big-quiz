@@ -59,17 +59,20 @@ class QuizComponent extends Component {
 
       docRef.onSnapshot(function(roomSnapshot) {
         var questionNumber = roomSnapshot.data().currentQuestion;
+
+        if (vm.state.currentQuestion !== questionNumber) {
+          docRef.collection('users').doc(firebase.user.uid).get().then(function(userSnapshot) {
+            let currentScore = parseInt(userSnapshot.data().score, 10);
+            vm.setState({
+              score: 0,
+              preQuestionScore: currentScore ? currentScore : 0
+            });
+          });
+        }
+
         vm.setState({
           currentQuestion: questionNumber,
           showAnswer: roomSnapshot.data().showAnswer
-        });
-
-        docRef.collection('users').doc(firebase.user.uid).get().then(function(userSnapshot) {
-          let currentScore = parseInt(userSnapshot.data().score, 10);
-          vm.setState({
-            score: 0,
-            preQuestionScore: currentScore ? currentScore : 0
-          });
         });
 
         docRef.collection('questions')
