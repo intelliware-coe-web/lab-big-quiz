@@ -1,11 +1,3 @@
-.container > div {
-  display: inline-block;
-  width: 50%;
-}
-
-button {
-  padding: 10px;
-  margin: 5px;
-  border-radius: 5px;
+.room-controls {
   float: left;
 }

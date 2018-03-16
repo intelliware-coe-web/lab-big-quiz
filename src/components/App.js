@@ -20,6 +20,8 @@ import SignUpPage from './pages/SignUp';
 
 import * as routes from '../constants/routes';
 
+import './App.css';
+
 const App = () =>
   <Router forceRefresh={true}>
     <div>

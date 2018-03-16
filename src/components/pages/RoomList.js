@@ -48,8 +48,11 @@ class RoomList extends Component {
   get renderRoomItemsAsUser() {
     const rooms = this.state.rooms;
     return rooms.map((room, index) => {
-      return <li className="room-info" key={room.id}>{room.name}
-        <Link to={'/quiz/' + room.id}>Join</Link>
+      return <li className="room-info" key={room.id}>
+        <h3>
+          {room.name}
+          <Link to={'/quiz/' + room.id}>Join</Link>
+        </h3>
       </li>
     });
   }

@@ -54,19 +54,21 @@ class EmailSignIn extends Component {
       email === '';
 
     return (      
-      <form onSubmit={this.onSubmit}>
+      <form onSubmit={this.onSubmit} className="login-form">
         <input
           value={email}
           onChange={event => this.setState(byPropKey('email', event.target.value))}
           type="text"
           placeholder="Email Address"
         />
+        <br/>
         <input
           value={password}
           onChange={event => this.setState(byPropKey('password', event.target.value))}
           type="password"
           placeholder="Password"
         />
+        <br/>
         <button disabled={isInvalid} type="submit">
           Sign In
         </button>

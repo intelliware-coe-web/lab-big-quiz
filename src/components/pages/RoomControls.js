@@ -11,7 +11,7 @@ const RoomControlsPage = ({match}) =>
   <div>
     <h1>Room Controls</h1>
 
-    <div>
+    <div className="room-controls">
       <PreviousButton room-id={match.params.roomId}/>
       <NextButton room-id={match.params.roomId}/>
       <ShowAnswerButton room-id={match.params.roomId}/>

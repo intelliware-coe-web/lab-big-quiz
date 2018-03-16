@@ -25,3 +25,9 @@ body {
 .room-info a {
   padding: 0 5px;
 }
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+}
