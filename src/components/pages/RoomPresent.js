@@ -150,8 +150,8 @@ class PresentQuestion extends Component {
     return topPlayers.map((player, index) => {
       return <li key={'top-player-'+index}>
         <div><Gravatar email={player.email} default="robohash" size={250}></Gravatar></div>
-        <div><h3>{player.name}</h3></div>
-        <div><h4>{player.score}</h4></div>
+        <div><h2>{player.name}</h2></div>
+        <div><h3>{player.score}</h3></div>
       </li>;
     });
   }
