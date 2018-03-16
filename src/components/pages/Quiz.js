@@ -21,6 +21,7 @@ class QuizComponent extends Component {
       code: '',
       hasMultipleCorrect: false,
       answers: [],
+      preQuestionScore: 0,
       score: 0,
       userRef: null
     }
@@ -38,6 +39,23 @@ class QuizComponent extends Component {
     if (roomId) {
       var docRef = firebase.firestore.collection('rooms').doc(roomId);
 
+      if (firebase.user) {
+        let userRef = docRef.collection('users').doc(firebase.user.uid);
+        vm.setState({userRef: userRef});
+
+        userRef.get().then(function(userData) {
+          if (!userData) {
+            userRef.set({
+              name: firebase.user.displayName,
+              email: firebase.user.email,
+              score: 0
+            });
+          }
+        })        
+      } else {
+        window.location('/');
+      }        
+
       docRef.onSnapshot(function(roomSnapshot) {
         var questionNumber = roomSnapshot.data().currentQuestion;
         vm.setState({
@@ -45,26 +63,18 @@ class QuizComponent extends Component {
           showAnswer: roomSnapshot.data().showAnswer
         });
 
-        if (firebase.user) {
-          let userRef = docRef.collection('users').doc(firebase.user.uid);
-          vm.setState({userRef: userRef});
-
-          userRef.get().then(function(userData) {
-            if (!userData) {
-              userRef.set({
-                name: firebase.user.displayName,
-                email: firebase.user.email,
-                score: 0
-              });
-            }
-          })        
-        } else {
-          window.location('/');
-        }                          
+        docRef.collection('users').doc(firebase.user.uid).get().then(function(userSnapshot) {
+          let currentScore = parseInt(userSnapshot.data().score);
+          vm.setState({
+            score: 0,
+            preQuestionScore: currentScore ? currentScore : 0
+          });
+        });
 
         docRef.collection('questions')
           .where('number', '==', questionNumber)
-          .onSnapshot(function(questionSnapshot) {
+          .get()
+          .then(function(questionSnapshot) {
             var questionData = questionSnapshot.docs[0].data();
             vm.setState({
               question: questionData.question,
@@ -147,7 +157,9 @@ class QuizComponent extends Component {
 
     if (target.value) {
       let points = parseInt(target.checked ? target.value : -target.value);
+
       let newScore = Number.isInteger(this.state.score) ? this.state.score + points : points;
+
       this.setState({
         score: newScore
       });
@@ -165,8 +177,10 @@ class QuizComponent extends Component {
           return answer.id;
         });
 
+      let updatedScore = this.state.preQuestionScore + this.state.score;
+
       this.state.userRef.update({
-        score: this.state.score,
+        score: updatedScore,
         answeredQuestions: answeredQuestionIds
       });
     }
