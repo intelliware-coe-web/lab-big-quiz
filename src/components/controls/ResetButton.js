@@ -31,8 +31,7 @@ class ResetButton extends WithQuizState {
       roomData.update({
           'currentQuestion': 1,
           'showAnswer': false,
-          'presentationState': PRESENTATION_STATE.SHOW_QUESTIONS,
-          'answerBreakdown': {}
+          'presentationState': PRESENTATION_STATE.SHOW_QUESTIONS
       });
     }
   }

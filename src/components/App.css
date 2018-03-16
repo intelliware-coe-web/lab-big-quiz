@@ -3,6 +3,7 @@
 }
 
 .show-answer[data-correct="true"] {
+  color: limegreen;
   font-weight: bold;
 }
 

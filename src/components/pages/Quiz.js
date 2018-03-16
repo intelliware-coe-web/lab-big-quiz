@@ -23,7 +23,8 @@ class QuizComponent extends Component {
       answers: [],
       preQuestionScore: 0,
       score: 0,
-      userRef: null
+      userRef: null,
+      formSubmitted: false
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -54,7 +55,7 @@ class QuizComponent extends Component {
         })        
       } else {
         window.location('/');
-      }        
+      }
 
       docRef.onSnapshot(function(roomSnapshot) {
         var questionNumber = roomSnapshot.data().currentQuestion;
@@ -64,7 +65,7 @@ class QuizComponent extends Component {
         });
 
         docRef.collection('users').doc(firebase.user.uid).get().then(function(userSnapshot) {
-          let currentScore = parseInt(userSnapshot.data().score);
+          let currentScore = parseInt(userSnapshot.data().score, 10);
           vm.setState({
             score: 0,
             preQuestionScore: currentScore ? currentScore : 0
@@ -96,6 +97,7 @@ class QuizComponent extends Component {
                     id: answer.id,
                     answer: answer.data().answer,
                     correct: answer.data().correct,
+                    selected: false,
                     points: answer.data().points
                   });
                 });
@@ -128,9 +130,9 @@ class QuizComponent extends Component {
           <label id={answer.id} data-correct={answer.correct} className={this.isCorrect}>
             <input name={this.state.currentQuestion} 
                    type={this.state.hasMultipleCorrect ? "checkbox" : "radio"} 
-                   value={answer.points} 
+                   value={answer.points} disabled={this.state.showAnswer}
                    onChange={this.handleChange(index)}/>
-            {answer.answer}
+            <span>{answer.answer}</span>
           </label>
         </li>
     });
@@ -138,33 +140,18 @@ class QuizComponent extends Component {
     return <ul className="quiz-questions">{answerList}</ul>;
   }
 
-  markSelectedAnswers(answerIndex, selected = false) {
-    const talliedAnswers = this.state.answers.map(answer => {
-      return !this.state.hasMultipleCorrect ? {
-        ...answer,
-        selected: false
-      } : answer;
-    });
-    talliedAnswers[answerIndex].selected = selected;
-
-    this.setState({
-      answers: talliedAnswers
-    });
-  }
-
   handleChange = (answerIndex) => (event) => {
     let target = event.target;
 
     if (target.value) {
-      let points = parseInt(target.checked ? target.value : -target.value);
+      let points = parseInt(target.checked ? target.value : -target.value, 10);
       points = Number.isNaN(points) ? 0 : points;
       let newScore = Number.isInteger(this.state.score) ? this.state.score + points : points;
 
       this.setState({
-        score: newScore
+        score: newScore,
+        formSubmitted: false
       });
-
-      this.markSelectedAnswers(answerIndex, target.checked);
     }
   }
 
@@ -178,6 +165,9 @@ class QuizComponent extends Component {
         });
 
       let updatedScore = this.state.preQuestionScore + this.state.score;
+      this.setState({
+        formSubmitted: true
+      });
 
       this.state.userRef.update({
         score: updatedScore,
@@ -199,7 +189,7 @@ class QuizComponent extends Component {
         </div>
         <form id="question-form" onSubmit={this.handleSubmit}>
           {this.renderAnswers}
-          <input type="submit" value="Submit"/>
+          <input type="submit" disabled={this.state.showAnswer} value={this.state.formSubmitted ? 'Submitted' : 'Submit'}/>
         </form>
       </div>
     );
