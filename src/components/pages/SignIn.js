@@ -7,7 +7,8 @@ import GoogleSignIn from '../auth/GoogleSignIn';
 
 const SignInPage = ({ history }) =>
   <div>
-    <h1>SignIn</h1>
+    <h1>Intelliware Web Coe Big Web Quiz</h1>
+    <hr/>
     <h3>Google Sign In</h3>
     <GoogleSignIn history={history} />
     <hr/>
